@@ -56,11 +56,11 @@ type CreateAPIRequest struct {
 		ParentID  string `json:"parent_id"`
 	} `json:"args"`
 	Overview     string `json:"overview"`
-	WhatHappened string `json:"what_happened"`
-	RootCause    string `json:"root_cause"`
+	WhatHappened string `json:"whatHappened"`
+	RootCause    string `json:"rootCause"`
 	Impact       string `json:"impact"`
 	Responders   string `json:"responders"`
-	ActionItems  string `json:"action_items"`
+	ActionItems  string `json:"actionItems"`
 }
 
 func (p *Plugin) handleCreate(w http.ResponseWriter, r *http.Request) {

@@ -29,7 +29,7 @@ export default class Root extends React.Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (!props.visible && state.message != null) {
+        if (!props.visible) {
             return {
                 whatHappened: null,
                 rootCause: null,
