@@ -12,10 +12,10 @@ export default class Plugin {
 
         registry.registerSlashCommandWillBePostedHook((message, args) => {
             if (message && message.startsWith('/post-mortem')) {
-                store.dispatch(openRootModal(args))
+                store.dispatch(openRootModal(args));
                 return Promise.resolve({});
             }
-            return Promise.resolve({ message, args });
+            return Promise.resolve({message, args});
         });
     }
 }

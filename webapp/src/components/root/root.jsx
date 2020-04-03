@@ -19,11 +19,11 @@ export default class Root extends React.Component {
         super(props);
 
         this.state = {
-            root_cause: null,
-            what_happened: null,
+            rootCause: null,
+            whatHappened: null,
             impact: null,
             responders: null,
-            action_items: null,
+            actionItems: null,
             overview: '',
         };
     }
@@ -31,29 +31,29 @@ export default class Root extends React.Component {
     static getDerivedStateFromProps(props, state) {
         if (!props.visible && state.message != null) {
             return {
-                what_happened: null,
-                root_cause: null,
+                whatHappened: null,
+                rootCause: null,
                 impact: null,
                 responders: null,
-                action_items: null,
-                overview: ''
+                actionItems: null,
+                overview: '',
             };
         }
         return null;
     }
 
     submit = () => {
-        const { submit, close, data } = this.props;
+        const {submit, close, data} = this.props;
         const {
             overview,
-            what_happened,
-            root_cause,
+            whatHappened,
+            rootCause,
             impact,
             responders,
-            action_items
+            actionItems,
         } = this.state;
 
-        submit(data, overview, what_happened, root_cause, impact, responders, action_items);
+        submit(data, overview, whatHappened, rootCause, impact, responders, actionItems);
         close();
     }
 
@@ -66,11 +66,11 @@ export default class Root extends React.Component {
 
         const {
             overview,
-            what_happened,
-            root_cause,
+            whatHappened,
+            rootCause,
             impact,
             responders,
-            action_items,
+            actionItems,
         } = this.state;
 
         const style = getStyle(theme);
@@ -94,7 +94,7 @@ export default class Root extends React.Component {
                             style={style.textarea}
                             value={overview}
                             placeholder='Summary of the incident'
-                            onChange={(e) => this.setState({ overview: e.target.value})}
+                            onChange={(e) => this.setState({overview: e.target.value})}
                         />
                     </div>
                     <div className='postmortem-item'>
@@ -104,9 +104,9 @@ export default class Root extends React.Component {
                         <textarea
                             className='postmortem-input'
                             style={style.textarea}
-                            value={what_happened}
+                            value={whatHappened}
                             placeholder='A description in what happened during the incident'
-                            onChange={(e) => this.setState({ what_happened: e.target.value})}
+                            onChange={(e) => this.setState({whatHappened: e.target.value})}
                         />
                     </div>
                     <div className='postmortem-item'>
@@ -116,9 +116,9 @@ export default class Root extends React.Component {
                         <textarea
                             className='postmortem-input'
                             style={style.textarea}
-                            value={root_cause}
+                            value={rootCause}
                             placeholder='The root cause of the incident'
-                            onChange={(e) => this.setState({ root_cause: e.target.value })}
+                            onChange={(e) => this.setState({rootCause: e.target.value})}
                         />
                     </div>
                     <div className='postmortem-item'>
@@ -130,7 +130,7 @@ export default class Root extends React.Component {
                             style={style.textarea}
                             value={impact}
                             placeholder='The impact of the incident'
-                            onChange={(e) => this.setState({ impact: e.target.value })}
+                            onChange={(e) => this.setState({impact: e.target.value})}
                         />
                     </div>
                     <div className='postmortem-item'>
@@ -142,7 +142,7 @@ export default class Root extends React.Component {
                             style={style.textarea}
                             value={responders}
                             placeholder='Who respond or was involved during the incident'
-                            onChange={(e) => this.setState({ responders: e.target.value })}
+                            onChange={(e) => this.setState({responders: e.target.value})}
                         />
                     </div>
                     <div className='postmortem-item'>
@@ -152,17 +152,17 @@ export default class Root extends React.Component {
                         <textarea
                             className='postmortem-input'
                             style={style.textarea}
-                            value={action_items}
+                            value={actionItems}
                             placeholder='Actions Items if exist any'
-                            onChange={(e) => this.setState({ action_items: e.target.value })}
+                            onChange={(e) => this.setState({actionItems: e.target.value})}
                         />
                     </div>
                     <div className='postmortem-button-container'>
                         <button
                             className={'btn btn-primary'}
-                            style={!overview || !what_happened || !root_cause || !impact ? style.inactiveButton : style.button}
+                            style={!overview || !whatHappened || !rootCause || !impact ? style.inactiveButton : style.button}
                             onClick={this.submit}
-                            disabled={!overview || !what_happened || !root_cause || !impact}
+                            disabled={!overview || !whatHappened || !rootCause || !impact}
                         >
                             {'Create Post Mortem'}
                         </button>

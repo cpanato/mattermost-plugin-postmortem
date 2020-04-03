@@ -8,17 +8,18 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/mattermost/mattermost-server/model"
-	"github.com/mattermost/mattermost-server/plugin"
+	"github.com/mattermost/mattermost-server/v5/model"
+	"github.com/mattermost/mattermost-server/v5/plugin"
 )
 
-const IconURL = "https://www.clipartmax.com/png/middle/192-1921764_download-png-image-report-white-notepad-icon-png.png"
+const iconURL = "https://www.clipartmax.com/png/middle/192-1921764_download-png-image-report-white-notepad-icon-png.png"
 
 // Plugin implements the interface expected by the Mattermost server to communicate between the server and plugin processes.
 type Plugin struct {
 	plugin.MattermostPlugin
 }
 
+// OnActivate runs when the plugin is activated
 func (p *Plugin) OnActivate() error {
 	if err := p.registerCommands(); err != nil {
 		return errors.Wrap(err, "failed to register commands")
@@ -27,6 +28,7 @@ func (p *Plugin) OnActivate() error {
 	return nil
 }
 
+// OnDeactivate runs when the plugin is deactivated
 func (p *Plugin) OnDeactivate() error {
 	if err := p.deRegisterCommands(); err != nil {
 		return errors.Wrap(err, "failed to register commands")
@@ -45,6 +47,7 @@ func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Req
 	}
 }
 
+// CreateAPIRequest struct to decode the data comming from the webapp
 type CreateAPIRequest struct {
 	Args struct {
 		ChannelID string `json:"channel_id"`
@@ -140,7 +143,7 @@ _made using Post Mortem plugin_
 
 	post.AddProp("from_webhook", "true")
 	post.AddProp("override_username", "Post Mortem")
-	post.AddProp("override_icon_url", IconURL)
+	post.AddProp("override_icon_url", iconURL)
 
 	if createRequest.Args.RootID != "" {
 		post.RootId = createRequest.Args.RootID

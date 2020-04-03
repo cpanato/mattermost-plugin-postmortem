@@ -15,12 +15,12 @@ const rootModalVisible = (state = false, action) => {
 
 const rootData = (state = false, action) => {
     switch (action.type) {
-        case OPEN_ROOT_MODAL:
-            return action.data;
-        case CLOSE_ROOT_MODAL:
-            return "";
-        default:
-            return state;
+    case OPEN_ROOT_MODAL:
+        return action.data;
+    case CLOSE_ROOT_MODAL:
+        return '';
+    default:
+        return state;
     }
 };
 
