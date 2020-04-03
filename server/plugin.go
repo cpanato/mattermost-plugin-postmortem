@@ -47,7 +47,7 @@ func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Req
 	}
 }
 
-// CreateAPIRequest struct to decode the data comming from the webapp
+// CreateAPIRequest struct to decode the data coming from the webapp
 type CreateAPIRequest struct {
 	Args struct {
 		ChannelID string `json:"channel_id"`
