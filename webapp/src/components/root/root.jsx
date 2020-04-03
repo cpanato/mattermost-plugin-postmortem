@@ -28,7 +28,7 @@ export default class Root extends React.Component {
         };
     }
 
-    static getDerivedStateFromProps(props, state) {
+    static getDerivedStateFromProps(props) {
         if (!props.visible) {
             return {
                 whatHappened: null,
