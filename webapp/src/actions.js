@@ -32,7 +32,7 @@ export const getPluginServerRoute = (state) => {
 };
 
 // export const create = (type, title, body, postID) => async (dispatch, getState) => {
-export const create = (args, overview, whatHappened, rootCause, impact, responders, actionItems) => async (dispatch, getState) => {
+export const create = (args, overview, timeline, rootCause, impact, recovery, lessons, actionItems) => async (dispatch, getState) => {
     fetch(getPluginServerRoute(getState()) + '/create', {
         method: 'POST',
         credentials: 'same-origin',
@@ -40,6 +40,6 @@ export const create = (args, overview, whatHappened, rootCause, impact, responde
             'Content-Type': 'application/json',
             'X-Requested-With': 'XMLHttpRequest',
         },
-        body: JSON.stringify({args, overview, whatHappened, rootCause, impact, responders, actionItems}),
+        body: JSON.stringify({args, overview, timeline, rootCause, impact, recovery, lessons, actionItems}),
     });
 };

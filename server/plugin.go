@@ -1,18 +1,23 @@
 package main
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
-	"time"
+	"os"
+	"path/filepath"
 
 	"github.com/pkg/errors"
 
+	"github.com/mandolyte/mdtopdf"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
 )
 
-const iconURL = "https://www.clipartmax.com/png/middle/192-1921764_download-png-image-report-white-notepad-icon-png.png"
+const iconURL = "https://cdn0.iconfinder.com/data/icons/online-education-butterscotch-vol-2/512/Student_Notes-512.png"
 
 // Plugin implements the interface expected by the Mattermost server to communicate between the server and plugin processes.
 type Plugin struct {
@@ -55,12 +60,13 @@ type CreateAPIRequest struct {
 		RootID    string `json:"root_id"`
 		ParentID  string `json:"parent_id"`
 	} `json:"args"`
-	Overview     string `json:"overview"`
-	WhatHappened string `json:"whatHappened"`
-	RootCause    string `json:"rootCause"`
-	Impact       string `json:"impact"`
-	Responders   string `json:"responders"`
-	ActionItems  string `json:"actionItems"`
+	Overview    string `json:"overview"`
+	Timeline    string `json:"timeline"`
+	RootCause   string `json:"rootCause"`
+	Impact      string `json:"impact"`
+	Recovery    string `json:"recovery"`
+	Lessons     string `json:"lessons"`
+	ActionItems string `json:"actionItems"`
 }
 
 func (p *Plugin) handleCreate(w http.ResponseWriter, r *http.Request) {
@@ -86,28 +92,15 @@ func (p *Plugin) handleCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	responders := createRequest.Responders
-	if createRequest.Responders == "" {
-		responders = "N/A"
-	}
-
 	actionItems := createRequest.ActionItems
 	if createRequest.ActionItems == "" {
 		actionItems = "N/A"
 	}
 
 	postMsg := fmt.Sprintf(`
-# Post Mortem - %s
+# Post Mortem
 
-## Overview
-
-%s
-
-## What Happened
-
-%s
-
-## Root Cause
+## Incident Summary
 
 %s
 
@@ -115,30 +108,72 @@ func (p *Plugin) handleCreate(w http.ResponseWriter, r *http.Request) {
 
 %s
 
-## Responders
+## Timeline
 
 %s
 
-## Action Items
+## Root Cause
 
 %s
 
+## Recovery
+
+%s
+
+## Lessons learned
+
+%s
+
+## Actions
+
+%s
 
 _made using Post Mortem plugin_
 `,
-		time.Now().Format(time.Stamp),
 		createRequest.Overview,
-		createRequest.WhatHappened,
-		createRequest.RootCause,
 		createRequest.Impact,
-		responders,
+		createRequest.Timeline,
+		createRequest.RootCause,
+		createRequest.Recovery,
+		createRequest.Lessons,
 		actionItems,
 	)
+
+	fileName := TempFileName("postmortem")
+	defer os.Remove(fileName)
+
+	pf := mdtopdf.NewPdfRenderer("", "", fileName, "")
+	pf.THeader = mdtopdf.Styler{Font: "Times", Style: "IUB", Size: 20, Spacing: 2,
+		TextColor: mdtopdf.Color{Red: 0, Green: 0, Blue: 0},
+		FillColor: mdtopdf.Color{Red: 179, Green: 179, Blue: 255}}
+	pf.TBody = mdtopdf.Styler{Font: "Arial", Style: "", Size: 12, Spacing: 2,
+		TextColor: mdtopdf.Color{Red: 0, Green: 0, Blue: 0},
+		FillColor: mdtopdf.Color{Red: 255, Green: 102, Blue: 129}}
+
+	err = pf.Process([]byte(postMsg))
+	if err != nil {
+		p.API.LogError("pdf.OutputFileAndClose()  err=" + err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	data, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		p.API.LogError("Unable to read the pdf file err=" + err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	fileToPost, errUploadFile := p.API.UploadFile(data, createRequest.Args.ChannelID, "post-mortem.pdf")
+	if errUploadFile != nil {
+		p.API.LogError("Error uploading the log file", "Err", errUploadFile.Error())
+	}
 
 	post := &model.Post{
 		UserId:    user.Id,
 		ChannelId: createRequest.Args.ChannelID,
 		Message:   postMsg,
+		FileIds:   []string{fileToPost.Id},
 	}
 
 	post.AddProp("from_webhook", "true")
@@ -155,4 +190,10 @@ _made using Post Mortem plugin_
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+}
+
+func TempFileName(prefix string) string {
+	randBytes := make([]byte, 16)
+	rand.Read(randBytes)
+	return filepath.Join(os.TempDir(), prefix+hex.EncodeToString(randBytes))
 }

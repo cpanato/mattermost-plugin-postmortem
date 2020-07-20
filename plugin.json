@@ -2,7 +2,7 @@
     "id": "com.cpanato.postmortem",
     "name": "Post Mortem Generator",
     "description": "This plugin makes it easy to create post mortem reports.",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "min_server_version": "5.12.0",
     "server": {
         "executables": {

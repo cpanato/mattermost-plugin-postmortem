@@ -20,10 +20,11 @@ export default class Root extends React.Component {
 
         this.state = {
             rootCause: null,
-            whatHappened: null,
+            timeline: null,
             impact: null,
-            responders: null,
+            lessons: null,
             actionItems: null,
+            recovery: null,
             overview: '',
         };
     }
@@ -31,11 +32,12 @@ export default class Root extends React.Component {
     static getDerivedStateFromProps(props) {
         if (!props.visible) {
             return {
-                whatHappened: null,
+                timeline: null,
                 rootCause: null,
                 impact: null,
-                responders: null,
+                lessons: null,
                 actionItems: null,
+                recovery: null,
                 overview: '',
             };
         }
@@ -46,14 +48,15 @@ export default class Root extends React.Component {
         const {submit, close, data} = this.props;
         const {
             overview,
-            whatHappened,
+            timeline,
             rootCause,
             impact,
-            responders,
+            lessons,
+            recovery,
             actionItems,
         } = this.state;
 
-        submit(data, overview, whatHappened, rootCause, impact, responders, actionItems);
+        submit(data, overview, timeline, rootCause, impact, recovery, lessons, actionItems);
         close();
     }
 
@@ -66,10 +69,11 @@ export default class Root extends React.Component {
 
         const {
             overview,
-            whatHappened,
+            timeline,
             rootCause,
             impact,
-            responders,
+            lessons,
+            recovery,
             actionItems,
         } = this.state;
 
@@ -87,38 +91,14 @@ export default class Root extends React.Component {
                     <h1>{'Post Mortem Template'}</h1>
                     <div className='postmortem-item'>
                         <h2>
-                            {'Overview'}
+                            {'Incident Summary'}
                         </h2>
                         <textarea
                             className='postmortem-input'
                             style={style.textarea}
                             value={overview}
-                            placeholder='Summary of the incident'
+                            placeholder='Write a summary of the incident in a few sentences. Include what happened, why, the severity of the incident and how long the impact lasted.'
                             onChange={(e) => this.setState({overview: e.target.value})}
-                        />
-                    </div>
-                    <div className='postmortem-item'>
-                        <h2>
-                            {'What Happened'}
-                        </h2>
-                        <textarea
-                            className='postmortem-input'
-                            style={style.textarea}
-                            value={whatHappened}
-                            placeholder='A description in what happened during the incident'
-                            onChange={(e) => this.setState({whatHappened: e.target.value})}
-                        />
-                    </div>
-                    <div className='postmortem-item'>
-                        <h2>
-                            {'Root Cause'}
-                        </h2>
-                        <textarea
-                            className='postmortem-input'
-                            style={style.textarea}
-                            value={rootCause}
-                            placeholder='The root cause of the incident'
-                            onChange={(e) => this.setState({rootCause: e.target.value})}
                         />
                     </div>
                     <div className='postmortem-item'>
@@ -129,20 +109,56 @@ export default class Root extends React.Component {
                             className='postmortem-input'
                             style={style.textarea}
                             value={impact}
-                            placeholder='The impact of the incident'
-                            onChange={(e) => this.setState({impact: e.target.value})}
+                            placeholder='Describe how the incident impacted internal and external users during the incident. Include how many support cases were raised.'
+                            onChange={(e) => this.setState({ impact: e.target.value })}
                         />
                     </div>
                     <div className='postmortem-item'>
                         <h2>
-                            {'Responders'}
+                            {'Timeline'}
                         </h2>
                         <textarea
                             className='postmortem-input'
                             style={style.textarea}
-                            value={responders}
-                            placeholder='Who respond or was involved during the incident'
-                            onChange={(e) => this.setState({responders: e.target.value})}
+                            value={timeline}
+                            placeholder='Detail the incident timeline (UTC times preferable)\nWhen did the team detect the incident? How did they know it was happening? How could we improve time to detection?'
+                            onChange={(e) => this.setState({timeline: e.target.value})}
+                        />
+                    </div>
+                    <div className='postmortem-item'>
+                        <h2>
+                            {'Root Cause'}
+                        </h2>
+                        <textarea
+                            className='postmortem-input'
+                            style={style.textarea}
+                            value={rootCause}
+                            placeholder="Describe the sequence of events that lead to the incident, for example, previous changes that introduced bugs that had not yet been detected. Describe how the change that was implemented didn't work as expected."
+                            onChange={(e) => this.setState({rootCause: e.target.value})}
+                        />
+                    </div>
+                    <div className='postmortem-item'>
+                        <h2>
+                            {'Recovery'}
+                        </h2>
+                        <textarea
+                            className='postmortem-input'
+                            style={style.textarea}
+                            value={recovery}
+                            placeholder='Describe how the issue got resolved.'
+                            onChange={(e) => this.setState({ recovery: e.target.value })}
+                        />
+                    </div>
+                    <div className='postmortem-item'>
+                        <h2>
+                            {'Lessons Learned'}
+                        </h2>
+                        <textarea
+                            className='postmortem-input'
+                            style={style.textarea}
+                            value={lessons}
+                            placeholder='Discuss what went well in the incident response, what could have been improved, and where there are opportunities for improvements.'
+                            onChange={(e) => this.setState({lessons: e.target.value})}
                         />
                     </div>
                     <div className='postmortem-item'>
@@ -153,16 +169,18 @@ export default class Root extends React.Component {
                             className='postmortem-input'
                             style={style.textarea}
                             value={actionItems}
-                            placeholder='Actions Items if exist any'
+                            placeholder='List the actions we’re taking to ensure that this same incident doesn’t reoccur.  The intent here is two thing:
+- Define actions for ourselves to improve our product and process.
+- Describe these actions in a way that gives customers a sense of comfort and clarity that the incident they just experienced won’t happen in the same way again.'
                             onChange={(e) => this.setState({actionItems: e.target.value})}
                         />
                     </div>
                     <div className='postmortem-button-container'>
                         <button
                             className={'btn btn-primary'}
-                            style={!overview || !whatHappened || !rootCause || !impact ? style.inactiveButton : style.button}
+                            style={!overview || !timeline || !rootCause || !impact || !actionItems || !lessons || !recovery ? style.inactiveButton : style.button}
                             onClick={this.submit}
-                            disabled={!overview || !whatHappened || !rootCause || !impact}
+                            disabled={!overview || !timeline || !rootCause || !impact || !actionItems || !lessons || !recovery}
                         >
                             {'Create Post Mortem'}
                         </button>
