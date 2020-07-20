@@ -110,7 +110,7 @@ export default class Root extends React.Component {
                             style={style.textarea}
                             value={impact}
                             placeholder='Describe how the incident impacted internal and external users during the incident. Include how many support cases were raised.'
-                            onChange={(e) => this.setState({ impact: e.target.value })}
+                            onChange={(e) => this.setState({impact: e.target.value})}
                         />
                     </div>
                     <div className='postmortem-item'>
@@ -146,7 +146,7 @@ export default class Root extends React.Component {
                             style={style.textarea}
                             value={recovery}
                             placeholder='Describe how the issue got resolved.'
-                            onChange={(e) => this.setState({ recovery: e.target.value })}
+                            onChange={(e) => this.setState({recovery: e.target.value})}
                         />
                     </div>
                     <div className='postmortem-item'>
