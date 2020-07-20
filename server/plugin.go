@@ -139,7 +139,7 @@ _made using Post Mortem plugin_
 		actionItems,
 	)
 
-	fileName := TempFileName("postmortem")
+	fileName := tempFileName("postmortem")
 	defer os.Remove(fileName)
 
 	pf := mdtopdf.NewPdfRenderer("", "", fileName, "")
@@ -192,7 +192,7 @@ _made using Post Mortem plugin_
 	}
 }
 
-func TempFileName(prefix string) string {
+func tempFileName(prefix string) string {
 	randBytes := make([]byte, 16)
 	rand.Read(randBytes)
 	return filepath.Join(os.TempDir(), prefix+hex.EncodeToString(randBytes))
