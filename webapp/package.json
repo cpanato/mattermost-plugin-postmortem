@@ -36,7 +36,7 @@
     "webpack": "4.35.0",
     "webpack-cli": "3.3.5",
     "set-value": ">=2.0.1",
-    "serialize-javascript": ">=2.1.1",
+    "serialize-javascript": ">=3.1.0",
     "minimist": ">=1.2.2",
     "kind-of": ">=6.0.3"
   },
